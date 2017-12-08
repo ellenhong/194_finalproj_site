@@ -1,0 +1,229 @@
+<html>
+  <head>
+    <link href="https://fonts.googleapis.com/css?family=Hind:300,400,700" rel="stylesheet">
+    <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Hind', sans-serif;
+        color: #1b1b1b;
+        margin-top: 50px;
+      }
+      td {
+        vertical-align: bottom;
+      }
+      #container {
+        width: 960px;
+        margin: auto;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <h2 align="middle">CS 194-26: Final Project</h2>
+      <h1 align="middle">Seam Carving, Fake Miniatures, and Vertigo Shots</h1>
+      <h3 align="middle">Ellen Hong & George Geng</h3>
+      <h2>Seam Carving</h2>
+
+      <h3>Overview</h3>
+      <p>In this project we implement the seam carving algorithm, which will allow us to effectively resize images without losing any information. In other words, we will be able to change the aspect ratio of an image without merely cropping out or distorting any part of it; instead, we maintain the most important components of the image while throwing away the unimportant components.</p>
+      
+      <p>This algorithm works in the following way: We first assign each pixel to its corresponding "importance" value via an energy function. We use the energy function detailed in <a href="https://inst.eecs.berkeley.edu/~cs194-26/fa17/hw/proj4-seamcarving/imret.pdf">this paper</a>, which is the gradient of each pixel. We then go through the image and, one by one, remove the seam with the lowest importance. This optimal seam is determined from the following dynamic programming recurrence relation for each pixel (i, j):</p>
+
+      <img width="500px" src="img/seamcarving_dp.png"/>
+      
+      <p>Below are some of the results of horizontal seam carving:</p>
+
+      <div align="middle">
+        <table style="width=100%">
+          <tr>
+            <td>
+              <img src="img/house2.jpg" align="middle" width="400px"/>
+              <figcaption align="middle">House</figcaption>
+            </td>
+            <td>
+              <img src="img/house2_carved_200.jpg" align="middle" width="400px"/>
+              <figcaption align="middle">House, 200 seams removed</figcaption>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div align="middle">
+        <table style="width=100%">
+          <tr>
+            <td>
+              <img src="img/sunset.jpg" align="middle" width="400px"/>
+              <figcaption align="middle">Sunset</figcaption>
+            </td>
+            <td>
+              <img src="img/sunset_carved_300.jpg" align="middle" width="400px"/>
+              <figcaption align="middle">Sunset, 300 seams removed</figcaption>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div align="middle">
+        <table style="width=100%">
+          <tr>
+            <td>
+              <img src="img/doge.jpg" align="middle" width="400px"/>
+              <figcaption align="middle">Dog</figcaption>
+            </td>
+            <td>
+              <img src="img/doge_carved_200.jpg" align="middle" width="400px"/>
+              <figcaption align="middle">Dog, 200 seams removed</figcaption>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      
+
+      <p>Examples of vertical seam carving:</p>
+
+      <div align="middle">
+        <table style="width=100%">
+          <tr>
+            <td>
+              <img src="img/bush.jpg" align="middle" height="300px"/>
+              <figcaption align="middle">Bush</figcaption>
+            </td>
+            <td>
+              <img src="img/bush_carved_200.jpg" align="middle" height="300px"/>
+              <figcaption align="middle">Bush, 200 seams removed</figcaption>
+            </td>
+          </tr>
+        </table>
+      </div>
+      
+      <div align="middle">
+        <table style="width=100%">
+          <tr>
+            <td>
+              <img src="img/horse.jpg" align="middle" height="300px"/>
+              <figcaption align="middle">Horse</figcaption>
+            </td>
+            <td>
+              <img src="img/horse_carved_150.jpg" align="middle" height="300px"/>
+              <figcaption align="middle">Horse, 150 seams removed</figcaption>
+            </td>
+          </tr>
+        </table>
+      </div>
+      
+
+      <div align="middle">
+        <table style="width=100%">
+          <tr>
+            <td>
+              <img src="img/snails.jpg" align="middle" height="300px"/>
+              <figcaption align="middle">Snails</figcaption>
+            </td>
+            <td>
+              <img src="img/snails_carved_150.jpg" align="middle" height="300px"/>
+              <figcaption align="middle">Snails, 150 seams removed</figcaption>
+            </td>
+          </tr>
+        </table>
+      </div>
+      
+      <div align="middle">
+        <table style="width=100%">
+          <tr>
+            <td>
+              <img src="img/stars.jpg" align="middle" height="300px"/>
+              <figcaption align="middle">Stars</figcaption>
+            </td>
+            <td>
+              <img src="img/stars_carved_200.jpg" align="middle" height="300px"/>
+              <figcaption align="middle">Stars, 200 seams removed</figcaption>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <p>Some not as successful results, which displayed a bit more distortion:</p>
+
+      <p>Below, the left side of the house has lost the top window.</p>
+
+      <div align="middle">
+        <table style="width=100%">
+          <tr>
+            <td>
+              <img src="img/house3.jpg" align="middle" height="300px"/>
+              <figcaption align="middle">House</figcaption>
+            </td>
+            <td>
+              <img src="img/house3_carved_200.jpg" align="middle" height="300px"/>
+              <figcaption align="middle">House, 200 seams removed.<br></figcaption>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <p>Because the background had so much going on, the legs of the deer were cut off instead:</p>
+
+      <div align="middle">
+        <table style="width=100%">
+          <tr>
+            <td>
+              <img src="img/deer.jpg" align="middle" width="300px"/>
+              <figcaption align="middle">Deer</figcaption>
+            </td>
+            <td>
+              <img src="img/deer_carved_200.jpg" align="middle" width="300px"/>
+              <figcaption align="middle">Deer, 200 seams removed.</figcaption>
+            </td>
+          </tr>
+        </table>
+      </div>
+      
+      <p>Straight diagonal lines are not preserved:</p>
+
+      <div align="middle">
+        <table style="width=100%">
+          <tr>
+            <td>
+              <img src="img/building.jpg" align="middle" height="300px"/>
+              <figcaption align="middle">Building</figcaption>
+            </td>
+            <td>
+              <img src="img/building_carved_200.jpg" align="middle" height="300px"/>
+              <figcaption align="middle">Building, 200 seams removed.</figcaption>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <p>The circle on the bottom is slightly distorted:</p>
+      
+      <div align="middle">
+        <table style="width=100%">
+          <tr>
+            <td>
+              <img src="img/circles.jpg" align="middle" height="300px"/>
+              <figcaption align="middle">Circles</figcaption>
+            </td>
+            <td>
+              <img src="img/circles_carved_200.jpg" align="middle" height="300px"/>
+              <figcaption align="middle">Circles, 200 seams removed.</figcaption>
+            </td>
+          </tr>
+        </table>
+      </div>
+      
+      <h2>Vertigo Shot</h2>
+
+      <h3>Overview</h3>
+      <p>In order to achieve the vertigo shot effect, we can take a series of photographs in which we alter the field of view while we move farther and farther away from the subject. To achieve this, we increase our distance to the subject and then increase zoom at the same rate, so that the object maintains its size across all shots. Below is an animated .gif of the vertigo shot sequence:</p>
+      
+      <div align="middle">
+        <img width="300px" src="img/ghost.gif" />
+      </div>
+
+
+    </div>
+  </body>
+</html>
